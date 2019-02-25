@@ -18,7 +18,13 @@ The above installation doesn't work on windows. I found the following article us
 ## Instruction to run
 
 To Train Model:
+
+```
 python main.py (set params as needed)
+```
 
 To Generate Saliency Maps(will saved in Frames folder):
+
+```
 python viz_saliency.py
+```
