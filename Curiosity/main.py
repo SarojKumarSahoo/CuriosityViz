@@ -14,25 +14,39 @@ from model import ActorCriticNetwork
 from scipy.misc import imresize 
 from PIL import Image
 import matplotlib.pyplot as plt
+from env import env
+from agent import Agent
 
-
+from saliency_helper import *
 
 parser = argparse.ArgumentParser(description='Baseline')
 
-parser.add_argument('--lr', type = float, default = 0.003, metavar = 'LR',
-                    help = 'Learning rate (Default: 0.0001)')
+parser.add_argument('--lr', type = float, default = 0.0003, metavar = 'LR',
+                    help = 'Learning rate (Default: 0.0003)')
 parser.add_argument('--gamma', type = float, default = 0.99, metavar = 'G',
                     help = 'Discount Factor for Rewards (Default: 0.99)')
-parser.add_argument('--tau', type = float, default = 1.00, metavar = 'T',
-                    help = 'Parameter for GAE (Default: 1.00)')
-parser.add_argument('--steps', type = int, default = 20, metavar = 'NS',
+parser.add_argument('--use_gae', type = bool, default = True, metavar = 'GAE',
+                    help = 'Use GAE? (Default: False)')
+parser.add_argument('--tau', type = float, default = 0.95, metavar = 'T',
+                    help = 'Parameter for GAE (Default: 0.95)')
+parser.add_argument('--num_steps', type = int, default = 128, metavar = 'NS',
                     help = 'Number of steps in a episode (Default: 20)')
-parser.add_argument('--render', default = 'False', metavar = 'RENDER',
+parser.add_argument('--epoch', type = int, default = 3, metavar = 'EPOCH',
+                    help = 'number of epochs? (Default : 3)')
+parser.add_argument('--batch_size', type = int, default = 32 , metavar = 'BS',
+                    help = 'Batch Size? (Default : 32)')
+parser.add_argument('--ppo_eps', type = float, default = 0.1 , metavar = 'PPO',
+                    help = 'Parameter for ppo clipping (Default : 0.1)')
+parser.add_argument('--is_render', type = bool, default = True , metavar = 'RENDER',
                     help = 'render the environment? (Default : False)')
-parser.add_argument('--use_cuda', default = 'False', metavar = 'CUDA',
-                    help = 'Using GPU for faster Processing (Default : False)')
+parser.add_argument('--training', type = bool, default = True , metavar = 'TR',
+                    help = 'Train the model? (Default : True)')
+parser.add_argument('--load_model', type = bool, default = False , metavar = 'TR',
+                    help = 'Load a pre trained model? (Default : False)')
+parser.add_argument('--use_cuda', type = bool, default = True, metavar = 'CUDA',
+                    help = 'Using GPU for faster Processing (Default : True)')
 ### For final Project, not required for baseline.                  
-parser.add_argument('--env', default = 'BreakoutDeterministic-v4', metavar = 'ENV',
+parser.add_argument('--env_id', default = 'BreakoutDeterministic-v4', metavar = 'ENV',
                     help = 'environment to train on (default: BreakoutDeterministic-v4)')
 parser.add_argument('--reward_type', default = 'Dense', metavar = 'RW',
                     help = 'Type of reward setting (Dense or Sparse, default: Dense)')
@@ -44,96 +58,64 @@ parser.add_argument('--icm', default = 'False', metavar = 'ICM',
 if __name__ == '__main__':
     args = parser.parse_args()
     device = torch.device('cuda' if args.use_cuda else 'cpu')
-
-    env = gym.make(args.env)
-    # test = imresize(env.reset()[35:195].mean(2), (80,80))
-    # plt.imshow(test)
-    # plt.show()
-    preprocess = lambda img: imresize(img[35:195].mean(2), (80,80)).astype(np.float32).reshape(1,80,80)/255
-    model = ActorCriticNetwork(1, env.action_space)
-
-    state = preprocess(env.reset())
-    state = torch.from_numpy(state)
-
-    optimizer = optim.Adam(model.parameters(), lr=args.lr)
-
-    model.train()
-    done = True
-    print ("state: ", state.shape)
-    env.render()
-
+    env_ob = env(args)
+    # print(env_ob.env.observation_space.shape, env_ob.env.action_space.n)
+    agent = Agent(args,env_ob.env.observation_space.shape, env_ob.env.action_space)
+    states = np.zeros([1, 4, 84, 84])
+    if args.load_model:
+        agent.model.load_state_dict(torch.load('my-BreakoutDeterministic-v4.model'))
+    
+    global_step = 0
+    frames = []
+    frames_rgb = []
+    d = False
     while True:
-        if done:
-            cx = Variable(torch.zeros(1, model.lstm_size))
-            hx = Variable(torch.zeros(1, model.lstm_size))
-        else:
-            cx = Variable(cx.data)
-            hx = Variable(hx.data)
+        all_state, all_reward, all_done, all_next_state, all_action = [], [], [], [], []
+        global_step += args.num_steps
+
+        # for i in range(args.num_steps):
+        next_states, rewards, dones = [], [], []
+
+        s, r, d, actions,s_rgb = env_ob.run(agent, states)
+        next_states.append(s)
+        rewards.append(r)
+        dones.append(d)
+
+        frames.append(s)
+        frames_rgb.append(s_rgb)
+        next_states = np.array(next_states)
+        rewards = np.hstack(rewards)
+        dones = np.hstack(dones)
+
+        all_state.append(states)
+        all_next_state.append(next_states)
+        all_reward.append(rewards)
+        all_done.append(dones)
+        all_action.append(actions)
+        
+        states = next_states[:, :, :, :]
 
         
-        values = []
-        log_probs = []
-        actions = []
-        rewards = []
-        entropies = []
+        if args.training:
+            all_state = np.stack(all_state).transpose(
+                [1, 0, 2, 3, 4]).reshape([-1, 4, 84, 84])
+            all_next_state = np.stack(all_next_state).transpose(
+                [1, 0, 2, 3, 4]).reshape([-1, 4, 84, 84])
+            all_reward = np.stack(all_reward).transpose().reshape([-1])
+            all_action = np.stack(all_action).transpose().reshape([-1])
+            all_done = np.stack(all_done).transpose().reshape([-1])
 
-        for step in range(10):#range(args.steps):
-            value, policy, (hx, cx) = model(
-                (Variable(state.view(1,1,80,80)), (hx, cx)))
-            
-            policy = F.softmax(policy)
-            entropy = Categorical(F.softmax(policy, dim=-1)).entropy()
-            entropies.append(entropy)
+            value, next_value, policy = agent.state_transition(all_state, all_next_state)
 
-            action = policy.multinomial(num_samples=1).data
-            actions.append(action)
-            log_prob = F.log_softmax(policy).gather(1, Variable(action))
-            env.render()
-            next_state, reward, done, _ = env.step(action.numpy())
-            done = done 
-            reward = max(min(reward, 1), -1)
+            all_target, all_adv = [], []
 
-            if done:
-                episode_length = 0
-                state = preprocess(env.reset())
+            target, adv = agent.get_advantage(all_reward, all_done, value, next_value)
+            all_target.append(target)
+            all_adv.append(adv)
 
-            state = torch.from_numpy(preprocess(next_state))
-            values.append(value)
-            log_probs.append(log_prob)
-            rewards.append(reward)
+            agent.train(all_state, np.hstack(all_target), all_action, np.hstack(all_adv))
 
-            if done:
-                break
-
-        if not done:
-            value, policy, _ = model((Variable(state.unsqueeze(0)), (hx, cx)))
-            R = value.data
-
-        values.append(Variable(R))
-        R = Variable(R)
-        total_target = []
-        gae = 0
-        for i in reversed(range(len(rewards))):
-            R = args.gamma * R + rewards[i]
-
-            delta_t = rewards[i] + args.gamma * values[i + 1].data - values[i].data
-            gae = gae * args.gamma * args.tau + delta_t
-            total_target.append(R)
-            
-        policy_loss = 0
-        value_loss = 0
-        gae = torch.zeros(1, 1)
-        m = Categorical(F.softmax(policy, dim=-1))
-        mse = nn.MSELoss()
-        actor_loss = -m.log_prob(torch.FloatTensor(actions)) * gae
-
-        entropy = m.entropy()
-
-        critic_loss = mse(value.sum(1), total_target)
-
-        loss = actor_loss.mean() + 0.5 * critic_loss -  entropy.mean()
-
-        optimizer.zero_grad()
-        loss.backward()
-        optimizer.step()
-    env.close()
+            if global_step % (args.num_steps * 100) == 0:
+                torch.save(agent.model.state_dict(), 'my-BreakoutDeterministic-v4.model')
+    
+    
