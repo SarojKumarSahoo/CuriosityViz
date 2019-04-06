@@ -15,7 +15,7 @@ import time
 
 import torch.optim as optim
 from torch.multiprocessing import Pipe, Process
-
+import matplotlib.pyplot as plt
 from collections import deque
 from saliency_helper import *
 from scipy.misc import imresize 
@@ -159,7 +159,7 @@ if __name__ == '__main__':
 
     use_cuda = True
     is_load_model = True 
-    is_render = True
+    is_render = False
     life_done = True
     use_noisy_net = True
 
@@ -233,21 +233,46 @@ if __name__ == '__main__':
             count +=1
             states = next_states[:, :, :, :]
 
-    for i in range(len(frames)):
-        if i%100 ==0:
-            actor_score = saliency_score(agent.model, frames[i], 3)
-            critic_score = saliency_score(agent.model, frames[i], 1, mode='critic')
-            
-            print(i)
-            import matplotlib.pyplot as plt
-            f = plt.figure(figsize=[6, 6*1.3])
+    frame = frames[0][3]
+    mask = get_mask([20,20], [84,84], r=5)
+    p = get_perturbed_image(frames[0][3], mask)
+    blurred_image = gaussian_filter(frames[0][3], sigma = 5)
 
-            frame = frames_rgb[i][3].copy()
-
-            frame = saliency_on_frame(actor_score, frame, fudge_factor=200, channel = 2, sigma = 3)
-            frame = saliency_on_frame(critic_score, frame, fudge_factor=400, channel = 0, sigma = 3)
+    for i in range(3):
+        f = plt.figure(figsize=[6, 6*1.3])
+        if i == 0:
             plt.imshow(frame)
             plt.show()
-            f.savefig('frames/frame{}.png'.format(i))
+            f.savefig('fframe.jpg')
+        elif i == 1:
+            plt.imshow(p)
+            plt.show()
+            f.savefig('p.jpg')
+        elif i == 2:
+            plt.imshow(blurred_image)
+            plt.show()
+            f.savefig('b.jpg')
+
+
+    # actor_score = saliency_score(agent.model, frames[0], 3)
+    # frame = saliency_on_frame(actor_score, frame, fudge_factor=200, channel = 2, sigma = 3)
+
+
+    # for i in range(len(frames)):
+    #     if i%100 ==0:
+    #         actor_score = saliency_score(agent.model, frames[i], 3)
+    #         critic_score = saliency_score(agent.model, frames[i], 1, mode='critic')
+            
+    #         print(i)
+    #         import matplotlib.pyplot as plt
+    #         f = plt.figure(figsize=[6, 6*1.3])
+
+    #         frame = frames_rgb[i][3].copy()
+
+    #         frame = saliency_on_frame(actor_score, frame, fudge_factor=200, channel = 2, sigma = 3)
+    #         frame = saliency_on_frame(critic_score, frame, fudge_factor=400, channel = 0, sigma = 3)
+    #         plt.imshow(frame)
+    #         plt.show()
+    #         f.savefig('frames/frame{}.png'.format(i))
 
    

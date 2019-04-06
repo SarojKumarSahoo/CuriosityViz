@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang='en'>
+	<head>
+		<meta charset='utf-8'>
+        <!-- <script type='text/javascript' src='https://d3js.org/d3.v5.min.js'></script> -->
+        <script type='text/javascript' src='https://d3js.org/d3.v4.min.js'></script>
+
+    </head>
+    <title>CuriosityViz</title>
+
+    <style>
+        .x_axis { font: 8px sans-serif;}
+        .y_axis { font: 10px sans-serif;}
+
+        #stackedBarChart {    
+            position:absolute;
+            top:600px;
+            left:10px;
+            width: 1670px;
+            height: 200px; 
+            border: 1px solid black;
+        }
+
+        #stackedBarChart1 {    
+            position:absolute;
+            top:600px;
+            left:10px;
+            width: 1670px;
+            height: 200px; 
+            border: 1px solid black;
+        }
+
+        #sp {    
+            position:absolute;
+            top:20px;
+            left:10px;
+            width: 500px;
+            height: 500px; 
+            /* border: 5px solid black; */
+        }
+
+        #sp1 {    
+            position:absolute;
+            top:20px;
+            left:600px;
+            width: 500px;
+            height: 500px; 
+            /* border: 5px solid black; */
+        }
+
+        #sp2 {    
+            position:absolute;
+            top:20px;
+            left:1200px;
+            width: 500px;
+            height: 500px; 
+            /* border: 5px solid black; */
+        }
+
+        .tooltip {
+            background: #eee;
+            box-shadow: 0 0 5px #999999;
+            color: #333;
+            font-size: 12px;
+            left: 630px;
+            padding: 10px;
+            position: absolute;
+            text-align: center;
+            top: 95px;
+            z-index: 10;
+            display: block;
+            opacity: 0;
+        }
+
+        .barLight {
+            fill: #2E2E31;
+        }
+
+        .barBase {
+            fill: #5288BE;
+        }
+
+        .brush .extent {
+            stroke: #fff;
+            fill-opacity: .125;
+            shape-rendering: crispEdges;
+        }
+
+        .area {
+            fill: steelblue;
+        }
+
+        .bar {
+            fill: steelblue;
+            clip-path: url(#clip);
+        }
+
+        .zoom {
+            cursor: move;
+            fill: none;
+            pointer-events: all;
+        }
+
+        #var_name {
+            margin-left: 60px;
+            margin-bottom: 5px;
+            font-family: 'Dosis', sans-serif;
+            font-size: 22px;
+            font-weight: 800;
+        }
+
+        
+
+    </style>
+
+	<body>
+        <div id="stackedBarChart"></div>
+
+        <div id="sp"></div>
+        <div id="sp1"></div>
+        <div id="sp2"></div>
+
+        <script type='text/javascript' src='stackedbarchart.js'></script>
+        
+        
+        <script type="text/javascript" src="spiral.js"></script>
+
+
+        <script type="text/javascript" src="spiral1.js"></script>
+       
+
+        <script type="text/javascript" src="spiral2.js"></script>
+
+	</body>
+</html>

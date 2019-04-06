@@ -65,9 +65,16 @@ if __name__ == '__main__':
     if args.load_model:
         agent.model.load_state_dict(torch.load('my-BreakoutDeterministic-v4.model'))
     
+
+    reward_rms = agent.RunningMeanStd()
+    obs_rms = agent.RunningMeanStd(shape=(1, 1, 84, 84))
+
+    pre_obs_norm_step = 10000
     global_step = 0
     frames = []
     frames_rgb = []
+    next_obs = []
+    all_i = []
     d = False
     while True:
         all_state, all_reward, all_done, all_next_state, all_action = [], [], [], [], []
@@ -77,9 +84,14 @@ if __name__ == '__main__':
         next_states, rewards, dones = [], [], []
 
         s, r, d, actions,s_rgb = env_ob.run(agent, states)
+        next_obs.append(s[3, :, :].reshape([1, 84, 84]))
+
         next_states.append(s)
         rewards.append(r)
         dones.append(d)
+
+        next_obs = np.stack(next_obs)
+        obs_rms.update(next_obs)
 
         frames.append(s)
         frames_rgb.append(s_rgb)
@@ -87,6 +99,13 @@ if __name__ == '__main__':
         rewards = np.hstack(rewards)
         dones = np.hstack(dones)
 
+        intrinsic_reward = agent.compute_intrinsic_reward(
+                (states - obs_rms.mean) / np.sqrt(obs_rms.var),
+                (next_states - obs_rms.mean) / np.sqrt(obs_rms.var),
+                actions)
+
+        intrinsic_reward = np.hstack(intrinsic_reward)
+        all_i += intrinsic_reward
         all_state.append(states)
         all_next_state.append(next_states)
         all_reward.append(rewards)
@@ -94,7 +113,7 @@ if __name__ == '__main__':
         all_action.append(actions)
         
         states = next_states[:, :, :, :]
-
+        
         
         if args.training:
             all_state = np.stack(all_state).transpose(
@@ -113,7 +132,7 @@ if __name__ == '__main__':
             all_target.append(target)
             all_adv.append(adv)
 
-            agent.train(all_state, np.hstack(all_target), all_action, np.hstack(all_adv))
+            #agent.train(all_state, np.hstack(all_target), all_action, np.hstack(all_adv))
 
             if global_step % (args.num_steps * 100) == 0:
                 torch.save(agent.model.state_dict(), 'my-BreakoutDeterministic-v4.model')
