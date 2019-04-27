@@ -48,23 +48,23 @@ Dot Plot - ``` ep_dist.js``` and ``` ep_dist1.js```
 ## Data Files
 Intrinsic : 
 
-actions_final_int2.csv
+```actions_final_int2.csv```
 
-rewards_final_int2.csv
+```rewards_final_int2.csv```
 
-episode_data_final_int2.csv
+```episode_data_final_int2.csv```
 
-feature_data_final_int2.csv
+```feature_data_final_int2.csv```
 
 Extrinsic :
 
-actions_final.csv
+```actions_final.csv```
 
-rewards_final.csv
+```rewards_final.csv```
 
-episode_data_final.csv
+```episode_data_final.csv```
 
-feature_data_final.csv
+```feature_data_final.csv```
 
 ## Report
 
