@@ -22,9 +22,17 @@ To Train Model:
 ```
 python main.py (set params as needed)
 ```
+**NOTE:** Code base not working as of now, incomplete implementation.
 
 To Generate Saliency Maps(will saved in Frames folder):
 
 ```
 python viz_saliency.py
+```
+
+To run vizualization:
+
+Goto d3 Viz subfolder and start a http server
+```
+python -m http.server 
 ```
