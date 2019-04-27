@@ -37,13 +37,13 @@ python -m http.server
 ```
 ## Javascript Files for Different Plots : 
 
-Line Chart - episodeStats.js
+Line Chart - ``` episodeStats.js```
 
-Pie Chart - pie_dist.js
+Pie Chart - ``` pie_dist.js```
 
-Scatter Plot - overallStats.js
+Scatter Plot - ``` overallStats.js```
 
-Dot Plot - ep_dist.js and ep_dist1.js
+Dot Plot - ``` ep_dist.js``` and ``` ep_dist1.js```
 
 ## Data Files
 Intrinsic : 
