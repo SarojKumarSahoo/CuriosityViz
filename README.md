@@ -8,27 +8,26 @@ This project explores various visualization techniques that could help us visual
 * cv2
 * gym[atari]
 
-## Installing open AI gym.
-```
-pip install gym[atari]
-```
-The above installation doesn't work on windows. I found the following article useful:
-* [Installing Gym on Windows](https://medium.com/@SeoJaeDuk/archive-post-how-to-install-open-ai-gym-on-windows-1f5208c16179)
+## Credits
+https://github.com/chagmgang/pytorch_ppo_rl/blob/master/Breakout_ppo.py
 
-## Instruction to run
+https://github.com/jcwleo/random-network-distillation-pytorch
+
+## Instruction to run Extrinsic
 
 To Train Model:
 
 ```
-python main.py (set params as needed)
+python extrinsic.py 
 ```
-**NOTE:** Code base not working as of now, incomplete implementation.
+## Instruction to run Intrinsic Model
 
-To Generate Saliency Maps(will saved in Frames folder):
+To Train Model:
 
 ```
-python viz_saliency.py
+python train.py 
 ```
+
 
 To run vizualization:
 
@@ -36,3 +35,37 @@ Goto d3 Viz subfolder and start a http server
 ```
 python -m http.server 
 ```
+## Javascript Files for Different Plots : 
+
+Line Chart - episodeStats.js
+
+Pie Chart - pie_dist.js
+
+Scatter Plot - overallStats.js
+
+Dot Plot - ep_dist.js and ep_dist1.js
+
+## Data Files
+Intrinsic : 
+
+actions_final_int2.csv
+
+rewards_final_int2.csv
+
+episode_data_final_int2.csv
+
+feature_data_final_int2.csv
+
+Extrinsic :
+
+actions_final.csv
+
+rewards_final.csv
+
+episode_data_final.csv
+
+feature_data_final.csv
+
+## Report
+
+FinalReport.pdf
