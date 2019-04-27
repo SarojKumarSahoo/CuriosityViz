@@ -4,132 +4,136 @@
 		<meta charset='utf-8'>
         <!-- <script type='text/javascript' src='https://d3js.org/d3.v5.min.js'></script> -->
         <script type='text/javascript' src='https://d3js.org/d3.v4.min.js'></script>
-
+        <script type='text/javascript' src='textures.js'></script>
+        <script src="//d3js.org/d3-scale-chromatic.v0.3.min.js"></script>
+        <script>
+            window.onresize = function(){ location.reload(); }
+        </script>
     </head>
     <title>CuriosityViz</title>
 
     <style>
-        .x_axis { font: 8px sans-serif;}
-        .y_axis { font: 10px sans-serif;}
-
-        #stackedBarChart {    
+        #episodeStatisticView {    
             position:absolute;
-            top:600px;
-            left:10px;
-            width: 1670px;
-            height: 200px; 
+            top: 1%;
+            left: 1%;
+            width: 30%;
+            height: 97%; 
             border: 1px solid black;
-        }
+            border-radius: 6px;
 
-        #stackedBarChart1 {    
+        }    
+
+        #ep_rw_chart {    
             position:absolute;
-            top:600px;
-            left:10px;
-            width: 1670px;
-            height: 200px; 
+            top:5%;
+            left:1.5%;
+            width: 29%;
+            height: 50%; 
             border: 1px solid black;
-        }
+            border-radius: 6px;
+        }    
 
-        #sp {    
+        #stck_chart {    
             position:absolute;
-            top:20px;
-            left:10px;
-            width: 500px;
-            height: 500px; 
-            /* border: 5px solid black; */
-        }
+            top:43%;
+            left:1.5%;
+            width: 29%;
+            height: 12%; 
+            border: 1px solid black;
+            border-radius: 6px;
+        }    
 
-        #sp1 {    
+        #ep_rw_dist {    
             position:absolute;
-            top:20px;
-            left:600px;
-            width: 500px;
-            height: 500px; 
-            /* border: 5px solid black; */
-        }
+            top:56%;
+            left:1.5%;
+            width: 29%;
+            height: 41%; 
+            border: 1px solid black;
+            border-radius: 6px;
 
-        #sp2 {    
+        } 
+
+        #overallStatisticView {    
             position:absolute;
-            top:20px;
-            left:1200px;
-            width: 500px;
-            height: 500px; 
-            /* border: 5px solid black; */
+            top:1%;
+            left:32%;
+            width: 67%;
+            height: 97%; 
+            border: 1px solid black;
+            border-radius: 6px;
+
+        }  
+
+        #feature_scatter {    
+            position:absolute;
+            top:5%;
+            left:32.5%;
+            width: 46%;
+            height: 92%; 
+            border: 1px solid black;
+            border-radius: 6px;
+
         }
 
-        .tooltip {
-            background: #eee;
-            box-shadow: 0 0 5px #999999;
-            color: #333;
-            font-size: 12px;
-            left: 630px;
-            padding: 10px;
-            position: absolute;
-            text-align: center;
-            top: 95px;
-            z-index: 10;
-            display: block;
-            opacity: 0;
+        #feature_scatter {    
+            position:absolute;
+            top:5%;
+            left:32.5%;
+            width: 46%;
+            height: 92%; 
+            border: 1px solid black;
+            border-radius: 6px;
+
         }
 
-        .barLight {
-            fill: #2E2E31;
+        #ep_dist1 {    
+            position:absolute;
+            top:5%;
+            left:79%;
+            width: 19.5%;
+            height: 45%; 
+            border: 1px solid black;
+            border-radius: 6px;
+
         }
 
-        .barBase {
-            fill: #5288BE;
+        #ep_dist2 {    
+            position:absolute;
+            top:51%;
+            left:79%;
+            width: 19.5%;
+            height: 46%; 
+            border: 1px solid black;
+            border-radius: 6px;
+
         }
 
-        .brush .extent {
-            stroke: #fff;
-            fill-opacity: .125;
-            shape-rendering: crispEdges;
-        }
 
-        .area {
-            fill: steelblue;
-        }
-
-        .bar {
-            fill: steelblue;
-            clip-path: url(#clip);
-        }
-
-        .zoom {
-            cursor: move;
-            fill: none;
-            pointer-events: all;
-        }
-
-        #var_name {
-            margin-left: 60px;
-            margin-bottom: 5px;
-            font-family: 'Dosis', sans-serif;
-            font-size: 22px;
-            font-weight: 800;
-        }
-
-        
 
     </style>
 
 	<body>
-        <div id="stackedBarChart"></div>
+        <link rel="stylesheet" href="line_chart.css">
 
-        <div id="sp"></div>
-        <div id="sp1"></div>
-        <div id="sp2"></div>
+        <div id="episodeStatisticView"></div>
+        <div id="ep_rw_chart"></div>
+        <!-- <div id="stck_chart"></div>
+        <script type='text/javascript' src='eps.js'></script> -->
 
-        <script type='text/javascript' src='stackedbarchart.js'></script>
-        
-        
-        <script type="text/javascript" src="spiral.js"></script>
+        <div id="ep_rw_dist"></div>
+        <script type='text/javascript' src='episodeStats.js'></script>
 
+        <script type='text/javascript' src='pie_dist.js'></script>
+        <div id="overallStatisticView"></div>
+        <div id="feature_scatter"></div>
+        <script type='text/javascript' src='overallStats.js'></script>
+        <div id="ep_dist1"></div>
+        <script type='text/javascript' src='ep_dist.js'></script>
+        <div id="ep_dist2"></div>
+        <script type='text/javascript' src='ep_dist1.js'></script>
 
-        <script type="text/javascript" src="spiral1.js"></script>
-       
-
-        <script type="text/javascript" src="spiral2.js"></script>
 
 	</body>
 </html>
