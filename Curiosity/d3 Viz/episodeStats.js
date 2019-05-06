@@ -1,4 +1,4 @@
-d3.csv("episode_data_final.csv", function(error2, data) {
+d3.csv("viz_data/episode_data_final12.csv", function(error2, data) {
     d3.csv("episode_data_final_int2.csv", function(error2, data1) {
 
     
@@ -59,7 +59,7 @@ d3.csv("episode_data_final.csv", function(error2, data) {
     .range([0, width-margin]);
 
     var yScale = d3.scaleLinear()
-    .domain([0,150])
+    .domain([0,250])
     .range([height-margin_y, 0]);
 
     var color = d3.scaleOrdinal(d3.schemeCategory10);
@@ -119,7 +119,7 @@ d3.csv("episode_data_final.csv", function(error2, data) {
             .attr("x1", xScale(d.Episode))
             .attr("x2", xScale(d.Episode))
             .attr("y1", yScale(0))
-            .attr("y2", yScale(150));
+            .attr("y2", yScale(250));
         } )
         .on("mouseout", function(d){
             d3.select(this).attr("r", 1);
@@ -137,7 +137,7 @@ d3.csv("episode_data_final.csv", function(error2, data) {
             .attr("x1", xScale(d.Episode))
             .attr("x2", xScale(d.Episode))
             .attr("y1", yScale(0))
-            .attr("y2", yScale(150));
+            .attr("y2", yScale(250));
 
             plot_scatter(d.Episode);
             plot_dist1(d.Episode);
@@ -177,7 +177,7 @@ d3.csv("episode_data_final.csv", function(error2, data) {
             .attr("x1", xScale(d.Episode))
             .attr("x2", xScale(d.Episode))
             .attr("y1", yScale(0))
-            .attr("y2", yScale(150));
+            .attr("y2", yScale(250));
             
         } )
         .on("mouseout", function(d){
@@ -197,7 +197,7 @@ d3.csv("episode_data_final.csv", function(error2, data) {
             .attr("x1", xScale(d.Episode))
             .attr("x2", xScale(d.Episode))
             .attr("y1", yScale(0))
-            .attr("y2", yScale(150));
+            .attr("y2", yScale(250));
 
             plot_scatter(d.Episode);
             plot_dist1(d.Episode);

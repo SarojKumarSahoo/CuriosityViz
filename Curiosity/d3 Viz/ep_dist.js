@@ -2,14 +2,14 @@ function plot_dist1(eps){
         
     d3.select("#ep_dist1 svg").remove();
 
-    d3.text("actions_final.csv", function(text) {
+    d3.text("viz_data/actions_final12.csv", function(text) {
         var adata = d3.csvParseRows(text).map(function(row) {
         return row.map(function(value) {
             return +value;
         });
         });
         
-        d3.text("rewards_final.csv", function(text) {
+        d3.text("viz_data/rewards_final12.csv", function(text) {
             var rdata = d3.csvParseRows(text).map(function(row) {
             return row.map(function(value) {
                 return +value;

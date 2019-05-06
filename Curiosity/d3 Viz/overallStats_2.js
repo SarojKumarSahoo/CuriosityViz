@@ -1,11 +1,11 @@
-d3.text("feature_data_final12.csv", function(text) {
+d3.text("viz_data/feature_data_final12.csv", function(text) {
     var fdata = d3.csvParseRows(text).map(function(row) {
       return row.map(function(value) {
         return +value;
       });
     });
     
-    d3.text("rewards_final12.csv", function(text) {
+    d3.text("viz_data/rewards_final12.csv", function(text) {
         var data = d3.csvParseRows(text).map(function(row) {
           return row.map(function(value) {
             return +value;

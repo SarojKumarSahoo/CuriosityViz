@@ -6,7 +6,7 @@
         });
         });
 
-        d3.text("actions_final.csv", function(text) {
+        d3.text("viz_data/actions_final12.csv", function(text) {
             var data1 = d3.csvParseRows(text).map(function(row) {
             return row.map(function(value) {
                 return +value;
@@ -20,7 +20,7 @@
                 });
                 });
 
-                d3.text("rewards_final.csv", function(text) {
+                d3.text("viz_data/rewards_final12.csv", function(text) {
                     var rdata1 = d3.csvParseRows(text).map(function(row) {
                     return row.map(function(value) {
                         return +value;
